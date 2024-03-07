@@ -117,7 +117,7 @@ if st.button('実行'):
         mode='markers+text',
         text=keywords_data['キーワード'],
         marker=dict(size=12, color=keywords_data['x_similarity'], colorscale='Viridis', showscale=True)
-    )]SS
+    )])
 
     if x_axis_selection == "その他（自由記述）" and y_axis_selection == "その他（自由記述）":
         fig.update_layout(title='キーワード単位の評価軸マッピング', xaxis_title=x_axis_custom, yaxis_title=y_axis_custom)
