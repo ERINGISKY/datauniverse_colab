@@ -1,25 +1,20 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-from transformers import BertTokenizer, BertModel, DistilBertTokenizer, DistilBertModel
+from transformers import BertTokenizer, BertModel
 import torch
 from scipy.spatial.distance import cosine
 import scipy.stats
 import numpy as np
 from io import BytesIO
 
+# BERTモデルのロード
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased')
 
-# モデルとトークナイザーのオンデマンドロードを行う関数
-def load_bert_model():
-    #tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased') # メモリ使用量が少ない軽量モデル
-    #model = BertModel.from_pretrained('bert-base-uncased')
-    model = DistilBertModel.from_pretrained('distilbert-base-uncased') # メモリ使用量が少ない軽量モデル
-    return tokenizer, model
-
-# 修正後のベクトル化関数
+# ベクトル化関数を修正して、入力が文字列かどうかをチェック
 def get_bert_embedding(text):
-    tokenizer, model = load_bert_model()  # この行を追加
+    # textが文字列でない場合、エラーメッセージを表示
     if not isinstance(text, str):
         raise ValueError(f"Expected a string, but got {type(text)}")
     inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
