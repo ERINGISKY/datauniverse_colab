@@ -11,12 +11,12 @@ import numpy as np
 st.title('DataUniverse 共同研究サンプル')
 
 # ステップ1: ユーザーの課題を入力
-st.markdown("#### ステップ1: 課題の記入")
-user_issue = st.text_area("あなたの課題を記入してください", placeholder="例：おむつの販売量を増加させるにはどうすればよいか？")
+st.markdown("#### Step1: 課題の記入")
+user_issue = st.text_area("あなたの課題を記入してください", placeholder="例：社会的使命でもある“持続可能な”事業運営（業務省人化・自動化・高精度化）")
 
 # ステップ1.5: 参考プロンプトの表示
 if user_issue:
-    st.markdown("##### ステップ1.5: 参考プロンプト")
+    st.markdown("##### Step1.5: 参考プロンプト")
     st.markdown("""
     1. 解決策の仮説を得るためのプロンプトの例
 
@@ -29,29 +29,38 @@ if user_issue:
     """.format(user_issue))
 
 # ステップ2: 参考プロンプトを用いたキーワードの記入
-st.markdown("#### ステップ2: キーワードの記入")
-input_keywords_str = st.text_area("あなたの課題に基づいて、最も関連性の高い社会的に意味のあるキーワードを最大10個、ここに貼り付けてください", placeholder="例：赤ちゃんの快適性、エコフレンドリー")
+st.markdown("#### Step2: キーワードの記入")
+st.markdown("※Step2はChatGPTを利用することで自動化が可能だが、ここでは手作業により実施")
+input_keywords_str = st.text_area("あなたの課題に基づいて、最も関連性の高い社会的に意味のあるキーワードを最大10個、ここに貼り付けてください", placeholder="例：業務省人化,自動化,高精度化")
 
 # ステップ3: データジャケットファイルのアップロード
-st.markdown("#### ステップ3: データジャケットのアップロード")
+st.markdown("#### Step3: データジャケットのアップロード")
+st.markdown("※Step3はDataUniverseにあるデータジャケットを自動でChatGPTを介しキーワード化することで自動化が可能だが、ここではテスト用のExcelを使用")
 uploaded_files = st.file_uploader("データジャケットのExcelファイルを選択してください", type=['xlsx'], accept_multiple_files=True)
 
+＜＜＜軸の選択は２列にして、左側に選択肢、そこが自由記述の場合は右側に記述としてください。＞＞＞
+
 # ステップ4: 評価軸の選択または記入
-st.markdown("#### ステップ4: 評価軸の選択または記入")
+st.markdown("#### Step4: 評価軸の選択または記入")
+st.markdown("※Step4ではキーワードを評価したい軸を設定")
 axis_optionsA = ["その他（自由記述）","コスト効率性", "短期成果", "顧客満足度", "イノベーション度","リスク","環境への影響"]
 axis_optionsB = ["その他（自由記述）","施策効果", "長期成果", "業務効率", "実行の容易さ", "市場の成長性","社会貢献"]
 
 x_axis_selection = st.selectbox("x軸の評価軸を選択してください", options=axis_optionsA)
-x_axis_custom = st.text_input("x軸の評価軸（自由記述）", placeholder="例：使い捨ておむつ") if x_axis_selection == "その他（自由記述）" else x_axis_selection
+x_axis_custom = st.text_input("x軸の評価軸（自由記述）", placeholder="例：SDGsへの対応") if x_axis_selection == "その他（自由記述）" else x_axis_selection
 y_axis_selection = st.selectbox("y軸の評価軸を選択してください", options=axis_optionsB)
-y_axis_custom = st.text_input("y軸の評価軸（自由記述）", placeholder="例：布おむつ") if y_axis_selection == "その他（自由記述）" else y_axis_selection
+y_axis_custom = st.text_input("y軸の評価軸（自由記述）", placeholder="例：入手しやすい") if y_axis_selection == "その他（自由記述）" else y_axis_selection
 
 # ステップ5: 類似度計算とグラフ表示
-st.markdown("##### ステップ5: 類似度計算とグラフ表示")
+st.markdown("##### Step5: 類似度計算とグラフ表示")
+st.markdown("ユーザー課題およびデータジャケットから抽出したキーワードの説明をベクトル化し、軸との類似性を評価して２軸にてマッピング")
+
 # 実行ボタン
 if st.button('実行'):
     # 入力されたキーワードを処理
     input_keywords = input_keywords_str.split(',') if input_keywords_str else []
+
+＜＜＜エクセルファイルの形式を変更しています。アップしているExcelを見て、キーワードの説明部分をベクトル化してください。ただ、グラフにはキーワードを表示してください。また、グラフは複数作成します。ひとつはキーワード単位。ひとつはデータジャケット単位(データジャケットの定量化は紐づくキーワードのベクトルの合計値)、ひとつはデータジャケットの分類単位です（紐づくデータジャケットのベクトルの合計値）。また、キーワードと軸の類似度を計算した後はその類似度に応じてさらにグループ化して表が画面に出るようにしてください。＞＞＞
 
     # ファイルがアップロードされたら処理
     excel_keywords = []
